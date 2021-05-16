@@ -34,7 +34,7 @@ class MessagingState extends State<Messaging> {
   List<QueryDocumentSnapshot> listMessage = new List.from([]);
   int _limit = 20;
   int _limitIncrement = 20;
-  String groupChatId;
+  String groupChatId = 'testing_group_chat';
   SharedPreferences prefs;
 
   File imageFile;
