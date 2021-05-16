@@ -64,13 +64,32 @@ class MessagingState extends State<Messaging> {
   
   Widget buildChatList(BuildContext context) {
     return Flexible(
-        child: ListView.builder(
-          itemBuilder: (context, index) => ChatItem(index),
-          padding: EdgeInsets.all(10),
-          itemCount: 20,
-          reverse: true,
-          controller: _scrollController,
-        )
+      child: groupChatId == ''
+          ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)))
+          : StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('messages')
+            .doc(groupChatId)
+            .collection(groupChatId)
+            .orderBy('timestamp', descending: true)
+            .limit(_limit)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)));
+          } else {
+            listMessage.addAll(snapshot.data.docs);
+            return ListView.builder(
+              padding: EdgeInsets.all(10.0),
+              itemBuilder: (context, index) => buildItem(index, snapshot.data.docs[index]),
+              itemCount: snapshot.data.docs.length,
+              reverse: true,
+              controller: _scrollController,
+            );
+          }
+        },
+      ),
     );
   }
   
@@ -443,8 +462,9 @@ class MessagingState extends State<Messaging> {
   }
 
   bool isLastMessageLeft(int index) {
+    if (index == 0) return true;
     Map<String, Object> lastMessage = listMessage[index - 1].data();
-    if ((index > 0 && listMessage != null && lastMessage['idFrom'] == id) || index == 0) {
+    if (index > 0 && listMessage != null && lastMessage['idFrom'] == id) {
       return true;
     } else {
       return false;
@@ -452,8 +472,9 @@ class MessagingState extends State<Messaging> {
   }
 
   bool isLastMessageRight(int index) {
+    if (index == 0) return true;
     Map<String, Object> lastMessage = listMessage[index - 1].data();
-    if ((index > 0 && listMessage != null && lastMessage['idFrom'] != id) || index == 0) {
+    if (index > 0 && listMessage != null && lastMessage['idFrom'] != id) {
       return true;
     } else {
       return false;
