@@ -55,7 +55,7 @@ class FriendListState extends State<FriendList> {
       home: Scaffold(
         appBar: AppBar(
           title: Text(
-            'MAIN',
+            'Friend List',
             style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,

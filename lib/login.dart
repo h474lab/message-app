@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'friend_list.dart';
 
@@ -57,7 +58,9 @@ class LoginState extends State<Login> {
                 Center(
                   child: OutlinedButton(
                     child: Text('Login'),
-                    onPressed: () {
+                    onPressed: () async {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('id', _usernameController.text);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
