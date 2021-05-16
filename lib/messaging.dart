@@ -45,6 +45,54 @@ class MessagingState extends State<Messaging> {
   String imageUrl;
 
   MessagingState({Key key, @required this.peerId, @required this.peerAvatar});
+
+  _scrollListener() {
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      setState(() {
+        _limit += _limitIncrement;
+      });
+    }
+  }
+  
+  void onFocusChange() {
+    if (focusNode.hasFocus) {
+      // Hide sticker when keyboard appear
+      setState(() {
+        isShowSticker = false;
+      });
+    }
+  }
+
+  readLocal() async {
+    prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id') ?? '';
+    if (id.hashCode <= peerId.hashCode) {
+      groupChatId = '$id-$peerId';
+    } else {
+      groupChatId = '$peerId-$id';
+    }
+
+    //FirebaseFirestore.instance.collection('users').doc(id).update({'chattingWith': peerId});
+
+    setState(() {});
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(onFocusChange);
+    _scrollController.addListener(_scrollListener);
+
+    groupChatId = '';
+
+    isLoading = false;
+    isShowSticker = false;
+    imageUrl = '';
+
+    readLocal();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -228,6 +276,8 @@ class MessagingState extends State<Messaging> {
           .doc(groupChatId)
           .collection(groupChatId)
           .doc(DateTime.now().millisecondsSinceEpoch.toString());
+
+      print('id = $id, peerId = $peerId');
 
       FirebaseFirestore.instance.runTransaction((transaction) async {
         transaction.set(
