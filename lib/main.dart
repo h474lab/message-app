@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:message_app/messaging.dart';
 
 import 'friend_list.dart';
+import 'login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(FriendList());
+  runApp(MaterialApp(
+    home: Login()
+  ));
 }

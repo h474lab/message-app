@@ -29,9 +29,9 @@ class MessagingState extends State<Messaging> {
   final TextEditingController _textEditingController = new TextEditingController();
   final FocusNode focusNode = FocusNode();
 
-  String peerId = 'oAe7eqyh2FyC3P1f526z';
+  String peerId;
   String peerAvatar;
-  String id = 'JFXCOVkNfw4grigSnrTp';
+  String id;
 
   List<QueryDocumentSnapshot> listMessage = new List.from([]);
   int _limit = 20;
