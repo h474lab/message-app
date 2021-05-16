@@ -36,7 +36,7 @@ class MessagingAppBar extends StatelessWidget implements PreferredSizeWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Robert',
+                          'Richard',
                           textScaleFactor: 2.0,
                           style: TextStyle(color: Colors.white),
                         ),

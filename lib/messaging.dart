@@ -13,23 +13,25 @@ import 'package:message_app/widget/full_photo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'chat_item.dart';
 import 'const.dart';
 
 class Messaging extends StatefulWidget {
+  final String peerId;
+  final String peerAvatar;
+  Messaging({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => MessagingState();
+  State<StatefulWidget> createState() => MessagingState(peerId: peerId, peerAvatar: peerAvatar);
 }
 
 class MessagingState extends State<Messaging> {
-
   final ScrollController _scrollController = new ScrollController();
   final TextEditingController _textEditingController = new TextEditingController();
   final FocusNode focusNode = FocusNode();
 
-  String peerId = 'JFXCOVkNfw4grigSnrTp';
+  String peerId = 'oAe7eqyh2FyC3P1f526z';
   String peerAvatar;
-  String id = 'oAe7eqyh2FyC3P1f526z';
+  String id = 'JFXCOVkNfw4grigSnrTp';
 
   List<QueryDocumentSnapshot> listMessage = new List.from([]);
   int _limit = 20;
@@ -41,6 +43,8 @@ class MessagingState extends State<Messaging> {
   bool isLoading;
   bool isShowSticker;
   String imageUrl;
+
+  MessagingState({Key key, @required this.peerId, @required this.peerAvatar});
   
   @override
   Widget build(BuildContext context) {
