@@ -180,10 +180,12 @@ class MessagingState extends State<Messaging> {
     Reference reference = storage.ref().child(fileName);
     UploadTask uploadTask = reference.putFile(imageFile);
     uploadTask.then((res) {
-      res.ref.getDownloadURL();
-      setState(() {
-        isLoading = false;
-        onSendMessage(imageUrl, 1);
+      res.ref.getDownloadURL().then((url) {
+        imageUrl = url;
+        setState(() {
+          isLoading = false;
+          onSendMessage(imageUrl, 1);
+        });
       });
     }, onError: (err) {
       setState(() {
