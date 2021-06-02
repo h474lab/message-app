@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:message_app/user_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'friend_list.dart';
@@ -11,6 +12,7 @@ class Login extends StatefulWidget {
 
 class LoginState extends State<Login> {
   TextEditingController _usernameController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,7 @@ class LoginState extends State<Login> {
                     }
                     return 'Valid';
                   },
+                  controller: _passwordController,
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 20),
@@ -61,14 +64,18 @@ class LoginState extends State<Login> {
                     onPressed: () async {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setString('id', _usernameController.text);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FriendList(
-                            currentUserId: _usernameController.text,
-                          )
-                        )
-                      );
+                      var userId = await UserHandler.getUserId(_usernameController.text,
+                          _passwordController.text);
+                      if (userId != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FriendList(
+                                  currentUserId: userId,
+                                )
+                            )
+                        );
+                      }
                     },
                   )
                 )
