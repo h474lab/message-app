@@ -7,8 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:message_app/messaging_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:message_app/user_handler.dart';
 import 'package:message_app/widget/full_photo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +32,10 @@ class MessagingState extends State<Messaging> {
   String peerId;
   String peerAvatar;
   String id;
+  
+  String _userId = '';
+  String _nickname = 'nickname';
+  double _appBarHeight = 60;
 
   List<QueryDocumentSnapshot> listMessage = new List.from([]);
   int _limit = 20;
@@ -44,7 +48,17 @@ class MessagingState extends State<Messaging> {
   bool isShowSticker;
   String imageUrl;
 
-  MessagingState({Key key, @required this.peerId, @required this.peerAvatar});
+  MessagingState({Key key, @required this.peerId, @required this.peerAvatar}) {
+    getUsername();
+  }
+
+  Future getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getString('user-id');
+    UserHandler.getNickname(_userId).then((value) => setState(() {
+      _nickname = value;
+    }));
+  }
 
   _scrollListener() {
     if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -99,7 +113,7 @@ class MessagingState extends State<Messaging> {
     return MaterialApp(
       title: 'OK',
       home: Scaffold(
-        appBar: MessagingAppBar(),
+        appBar: buildAppBar(context),
         body: SafeArea(
           child: Center(
               child: Column(
@@ -111,6 +125,80 @@ class MessagingState extends State<Messaging> {
           ),
         )
       ),
+    );
+  }
+
+  Widget buildAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(_appBarHeight),
+      child: Material(
+          child: SafeArea(
+            child: Container(
+              decoration: new BoxDecoration(
+                  boxShadow:[new BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 5.0,
+                  )]
+              ),
+              child: Container(
+                color: Colors.indigo,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        icon: Icon(
+                          Icons.arrow_back_rounded,
+                          color: Colors.white,
+                        ),
+                        iconSize: 40,
+                      ),
+                      margin: const EdgeInsets.only(left: 20),
+                    ),
+                    Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              _nickname,
+                              textScaleFactor: 2.0,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.watch_later,
+                                    color: Colors.green,
+                                    size: 15,
+                                  ),
+                                  Text(
+                                    'Online',
+                                    style: TextStyle(color: Colors.green),
+                                    textScaleFactor: 1.0,
+                                  ),
+                                ]
+                            )
+                          ],
+                        )
+                    ),
+                    Container(
+                      child: IconButton(
+                        icon: Icon(
+                            Icons.settings,
+                            color: Colors.white
+                        ),
+                        iconSize: 40,
+                      ),
+                      margin: const EdgeInsets.only(right: 20),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
+      )
     );
   }
   
