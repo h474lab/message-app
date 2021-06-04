@@ -19,4 +19,20 @@ class UserHandler {
 
     return completer.future;
   }
+
+  static Future<String> getNickname(String id) async {
+    Completer<String> completer = new Completer<String>();
+
+    Stream<QuerySnapshot> snapshot = FirebaseFirestore.instance.collection('users')
+        .where('id', isEqualTo: id).snapshots();
+
+    snapshot.forEach((element) {
+      if (element.docs.isEmpty) completer.complete('user');
+      element.docs.asMap().forEach((key, value) {
+        completer.complete(element.docs[key]['nickname']);
+      });
+    });
+
+    return completer.future;
+  }
 }

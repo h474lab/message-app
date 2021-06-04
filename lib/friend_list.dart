@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:message_app/messaging.dart';
 import 'package:message_app/widget/loading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'const.dart';
 
@@ -279,7 +280,9 @@ class FriendListState extends State<FriendList> {
               ),
             ],
           ),
-          onPressed: () {
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('user-id', document.id);
             Navigator.push(
                 context,
                 MaterialPageRoute(
