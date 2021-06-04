@@ -63,9 +63,9 @@ class LoginState extends State<Login> {
                     child: Text('Login'),
                     onPressed: () async {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setString('id', _usernameController.text);
                       var userId = await UserHandler.getUserId(_usernameController.text,
                           _passwordController.text);
+                      prefs.setString('id', userId);
                       if (userId != null) {
                         Navigator.push(
                             context,
